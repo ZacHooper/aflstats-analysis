@@ -20,6 +20,7 @@ app.layout = html.Div(children=[
         Select your favourite team or compare different teams by selecting them.
     '''),
     
+    # Dropdown to select which teams are displayed in the plot
     dcc.Dropdown(
                 id='home-team-select',
                 options=[{'label': i, 'value': i} for i in matches.home_team.unique()],
@@ -35,7 +36,15 @@ app.layout = html.Div(children=[
 @app.callback(Output('afl-elo-rating', 'figure'), 
               Input('home-team-select', 'value'))
 def update_graph(team_name):
-    
+    """Creates a line plot showing a teams change in Elo Rating over time
+
+    Args:
+        team_name (Input): The teams names chosen in the Dash dropdown
+
+    Returns:
+        Figure: A Plotly plot
+    """
+    # Check if more than one team is being compared
     if isinstance(team_name, str):
         matches_filtered = matches[matches.home_team == team_name]
         fig = px.line(matches_filtered, x=matches_filtered.date, y="home_team_current_rating", hover_data=['round'])        
